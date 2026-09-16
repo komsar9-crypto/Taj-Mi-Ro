@@ -1,0 +1,233 @@
+/* Import cyberpunkowej czcionki z Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap');
+
+:root {
+    --bg-color: #07090a;
+    --neon-blue: #55c1e0;
+    --neon-blue-dim: rgba(85, 193, 224, 0.3);
+    --neon-blue-glow: rgba(85, 193, 224, 0.5);
+    --gold-border: #9b813b;
+    --text-color: #61a6b8;
+    --text-active: #8ee0f5;
+    --orange-accent: #d2691e;
+}
+
+/* Reset marginesów */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Ciemne tło za terminalem */
+html {
+    background-color: var(--bg-color);
+    height: 100vh;
+    padding: 3vh 3vw; /* Margines wokół ekranu terminala */
+}
+
+/* Główne okno terminala (złota ramka) */
+body {
+    font-family: 'Rajdhani', sans-serif;
+    background: radial-gradient(circle at center, #0e1619 0%, #050708 100%);
+    color: var(--text-color);
+    height: 100%;
+    border: 3px solid var(--gold-border);
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8) inset, 0 0 10px rgba(155, 129, 59, 0.3);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden; /* Zapobiega wychodzeniu elementów za zaokrąglone rogi */
+}
+
+/* --- PASEK NAWIGACJI (HEADER) --- */
+header {
+    display: flex;
+    align-items: flex-end;
+    height: 80px;
+    border-bottom: 2px solid var(--neon-blue);
+    padding: 0 40px;
+    gap: 30px;
+    position: relative;
+}
+
+/* Pomarańczowe akcenty na linii nagłówka */
+header::before, header::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    width: 15px;
+    height: 4px;
+    background-color: var(--orange-accent);
+}
+header::before { left: 40px; }
+header::after { right: 40px; }
+
+/* Poszczególne zakładki (teraz jako linki) */
+.zakladka {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    color: var(--text-color);
+    border: 1px solid transparent;
+    cursor: pointer;
+    position: relative;
+    bottom: -2px;
+    text-decoration: none; /* Usuwa domyślne podkreślenie linków */
+    transition: all 0.2s ease-in-out;
+}
+
+.zakladka h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+/* Efekt najechania myszką na nieaktywną zakładkę (hover) */
+.zakladka:hover {
+    color: var(--text-active);
+    border: 2px solid var(--neon-blue-dim);
+    background-color: rgba(14, 22, 25, 0.5);
+}
+
+/* Wygląd włączonej (aktywnej) zakładki */
+.zakladka.aktywna {
+    color: var(--text-active);
+    border: 2px solid var(--neon-blue);
+    border-bottom: 2px solid #0e1619; /* Stapia się z tłem głównego ekranu */
+    background-color: rgba(14, 22, 25, 0.9);
+}
+
+/* Ozdobny kwadracik w lewym górnym rogu aktywnej zakładki */
+.zakladka.aktywna::before {
+    content: '';
+    position: absolute;
+    top: -2px; left: -2px;
+    width: 10px; height: 10px;
+    border-top: 2px solid var(--neon-blue);
+    border-left: 2px solid var(--neon-blue);
+}
+/* --- OBSZAR GŁÓWNY (MAIN) --- */
+main {
+    display: flex;
+    flex: 1;
+    padding: 20px 40px;
+    height: calc(100% - 80px); /* Reszta ekranu po odjęciu headera */
+}
+
+/* --- PANEL BOCZNY (ASIDE) --- */
+aside {
+    width: 380px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-right: 1px solid var(--neon-blue-dim);
+    padding-right: 20px;
+    padding-top: 10px;
+}
+
+/* Pojedyncza wiadomość na liście */
+.wiadomosc {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 12px 15px 12px 25px; /* Dodatkowe miejsce z lewej na pseudo-ikonkę */
+    border: 1px solid var(--neon-blue-dim);
+    border-radius: 3px;
+    cursor: pointer;
+    background-color: rgba(9, 12, 13, 0.6);
+    transition: all 0.2s;
+    position: relative;
+}
+
+/* Imitacja ikonki po lewej stronie wiadomości */
+.wiadomosc::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 12px;
+    bottom: 12px;
+    width: 3px;
+    background-color: var(--neon-blue-dim);
+}
+
+.wiadomosc:hover {
+    border-color: var(--neon-blue);
+    background-color: var(--neon-blue-dim);
+    box-shadow: 0 0 10px var(--neon-blue-glow);
+}
+
+.wiadomosc h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-active);
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.wiadomosc p {
+    font-size: 0.8rem;
+    color: var(--text-color);
+    text-transform: uppercase;
+}
+
+/* --- TREŚĆ (SECTION) --- */
+section {
+    flex: 1;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+section h2 {
+    font-size: 2rem;
+    color: var(--orange-accent);
+    text-shadow: 0 0 10px rgba(210, 105, 30, 0.4);
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+section p {
+    font-size: 1.2rem;
+    color: var(--text-active);
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+/* --- PRZYCISK POWROTU (A) --- */
+a {
+    position: absolute;
+    bottom: 25px;
+    right: 40px;
+    color: var(--orange-accent);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 8px 20px;
+    border: 1px solid var(--orange-accent);
+    border-radius: 4px;
+    background-color: rgba(210, 105, 30, 0.1);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Efekt najechania myszką na przycisk "BACK" */
+a:hover {
+    background-color: var(--orange-accent);
+    color: var(--bg-color);
+    box-shadow: 0 0 15px rgba(210, 105, 30, 0.6);
+}
+
+/* Kwadracik z "ESC" dodany wizualnie przed napisem BACK */
+a::before {
+    content: 'ESC';
+    font-size: 0.8rem;
+    border: 1px solid currentColor;
+    padding: 2px 6px;
+    border-radius: 2px;
+    background-color: rgba(0,0,0,0.2);
+}
