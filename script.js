@@ -1,4 +1,10 @@
+const supabaseUrl = "https://naksuazwneyfywkrcnjw.supabase.co/rest/v1/";
+const supabaseKey = "sb_publishable_LKiNARi0BHwZkM4HofcZnA_IVsxS4Ul";
 
+const supabase = window.supabase.createClient(
+    supabaseUrl,
+    supabaseKey
+);
 // Lista wszystkich uczestników //
 
 
