@@ -1,4 +1,4 @@
-//===Logowanie===//
+
 // Lista wszystkich uczestników //
 
 const supabaseUrl = "https://naksuazwneyfywkrcnjw.supabase.co/rest/v1/";
