@@ -21,7 +21,7 @@ async function pobierzUczestnikow() {
     console.log("Pobrani uczestnicy:", uczestnicy);
 }
 
-pobierzUczestnikow();
+const uczestnicyGotowi = pobierzUczestnikow();
 // Pobieranie elementów strony aby móc nimi sterować w JvaScript //
 
 const poleImie = document.getElementById("imie");
@@ -41,7 +41,8 @@ const przyciskEdytuj = document.getElementById("edytuj");
 
 let ZalogowanyUzytkownik = "";
 
-przycisk.addEventListener("click", function() {
+przycisk.addEventListener("click", async function() {
+    await uczestnicyGotowi;
     const imie = poleImie.value;
 if (uczestnicy.includes(imie)) {
 
