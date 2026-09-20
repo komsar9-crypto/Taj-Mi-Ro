@@ -101,8 +101,8 @@ if (uczestnicy.includes(imie)) {
 
     przycisklosuj.style.display = "block";
 
-    const zapisanaOsoba = localStorage.getItem(
-    "wylosowana_" + ZalogowanyUzytkownik
+    const zapisanaOsoba = await pobierzWylosowanaOsoba(
+        ZalogowanyUzutkownik
 );
 
 if (zapisanaOsoba) {
