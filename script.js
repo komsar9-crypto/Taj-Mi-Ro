@@ -35,6 +35,22 @@ async function pobierzWylosowanaOsobe(imie) {
     }
     return data.Wylosowano;
 };
+
+async function zapiszWylosowanaOsobe(imie, wylosowanaOsoba) {
+    const { error } = await supabase1
+        .from("Losowanie")
+        .update({
+            Wylosowano: wylosowanaOsoba
+        })
+        .eq("imię", imie);
+
+    if (error) {
+        console.error("Błąd zapisywania losowania:", error);
+        return false;
+    }
+
+    return true;
+}
 // Pobieranie elementów strony aby móc nimi sterować w JvaScript //
 
 const poleImie = document.getElementById("imie");
