@@ -7,7 +7,7 @@ let uczestnicy = [];
 async function pobierzUczestnikow() {
     const { data, error } = await supabase1
         .from("Uczestnicy")
-        .select("imiona");
+        .select("Imiona");
 
     if (error) {
         console.error("Błąd pobierania uczestników:", error);
@@ -15,7 +15,7 @@ async function pobierzUczestnikow() {
     }
 
     uczestnicy = data.map(function(osoba) {
-        return osoba.imiona;
+        return osoba.Imiona;
     });
 
     console.log("Pobrani uczestnicy:", uczestnicy);
