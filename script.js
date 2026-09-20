@@ -25,7 +25,7 @@ const uczestnicyGotowi = pobierzUczestnikow();
 
 async function pobierzWylosowanaOsobe(imie) {
     const { data, error } = await supabase1
-          .from("Losoawanie")
+          .from("Losowanie")
           .select("Wylosowano")
           .eq("imię", imie)
           .single();
