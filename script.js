@@ -3,21 +3,25 @@ const supabaseKey = "sb_publishable_LKiNARi0BHwZkM4HofcZnA_IVsxS4Ul";
 
 const supabase1 = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-const uczestnicy = [
-    "Radek",
-    "Kasia",
-    "Lusia",
-    "Arek",
-    "Arletka",
-    "Andrzejek",
-    "Małgosia",
-    "Magda",
-    "Krzyś",
-    "Zosia",
-    "Hektorek",
-    "Felix",
-]; 
+let uczestnicy = [];
+async function pobierzUczestnikow() {
+    const { data, error } = await supabase1
+        .from("Uczestnicy")
+        .select("imiona");
 
+    if (error) {
+        console.error("Błąd pobierania uczestników:", error);
+        return;
+    }
+
+    uczestnicy = data.map(function(osoba) {
+        return osoba.imiona;
+    });
+
+    console.log("Pobrani uczestnicy:", uczestnicy);
+}
+
+pobierzUczestnikow();
 // Pobieranie elementów strony aby móc nimi sterować w JvaScript //
 
 const poleImie = document.getElementById("imie");
