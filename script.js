@@ -22,6 +22,19 @@ async function pobierzUczestnikow() {
 }
 
 const uczestnicyGotowi = pobierzUczestnikow();
+
+async function pobierzWylosowanaOsobe(imie) {
+    const { data, error } = await supabase1
+          .from("Losoawanie")
+          .select("Wylosowano")
+          .eq("imię", imie)
+          .single();
+
+    if (error) {
+        console.error("Błąd pobierania losowania:", error);
+    }
+    return data.Wylosowano;
+}
 // Pobieranie elementów strony aby móc nimi sterować w JvaScript //
 
 const poleImie = document.getElementById("imie");
