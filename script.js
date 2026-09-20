@@ -34,7 +34,7 @@ async function pobierzWylosowanaOsobe(imie) {
         console.error("Błąd pobierania losowania:", error);
     }
     return data.Wylosowano;
-}
+};
 // Pobieranie elementów strony aby móc nimi sterować w JvaScript //
 
 const poleImie = document.getElementById("imie");
