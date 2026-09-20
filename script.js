@@ -1,7 +1,4 @@
 
-// Lista wszystkich uczestników //
-
-
 const uczestnicy = [
     "Radek",
     "Kasia",
