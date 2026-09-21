@@ -117,7 +117,7 @@ if (uczestnicy.includes(imie)) {
 
     przycisklosuj.style.display = "block";
 
-    const zapisanaOsoba = await pobierzWylosowanaOsoba(
+    const zapisanaOsoba = await pobierzWylosowanaOsobe(
         ZalogowanyUzytkownik
 );
 
