@@ -125,3 +125,7 @@ color: #3b2815;
 #odliczanie {
     color: red;
 }
+.sekretny-link {
+    color: inherit; /* Sprawia, że link przyjmuje kolor zwykłego tekstu z <p> */
+    text-decoration: none; /* Usuwa domyślne podkreślenie */
+}
