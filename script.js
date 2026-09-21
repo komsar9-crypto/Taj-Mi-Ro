@@ -175,7 +175,7 @@ if (zapisanaOsoba) {
 
 //===Losowanie===//
 
-przycisklosuj.addEventListener("click", function() {
+przycisklosuj.addEventListener("click", async function() {
 
     const zapisanaOsoba = localStorage.getItem(
     "wylosowana_" + ZalogowanyUzytkownik
@@ -195,10 +195,15 @@ przycisklosuj.addEventListener("click", function() {
 
        const WylosowanaOsoba = OsobyDoWylosowania[indeks];
 
-       localStorage.setItem(
-    "wylosowana_" + ZalogowanyUzytkownik,
+    const zapisano = await zapiszWylosowanaOsobe(
+    ZalogowanyUzytkownik,
     WylosowanaOsoba
 );
+
+if (!zapisano) {
+    alert("Nie udało się zapisać wyniku losowania.");
+    return;
+}
 
  WynikLosowania.textContent = "Twoją osobą jest " + WylosowanaOsoba + " a oto jej lista życzeń:";
 
