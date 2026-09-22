@@ -292,30 +292,34 @@ const linkElement = document.createElement("a");
 
 });
 
-przyciskZapisz.addEventListener("click", function() {
-    const prezenty = [];
+przyciskZapisz.addEventListener("click", async function() {
+
     const elementy = mojaLista.querySelectorAll("li");
-    elementy.forEach(function(element) {
 
-const linkElement = element.querySelector("a");
+    for (const element of elementy) {
 
-const prezent = {
-nazwa: linkElement
-? element.childNodes[0].textContent.trim()
-: element.textContent.trim(),
+        const linkElement = element.querySelector("a");
 
-link: linkElement
-? linkElement.href
-: ""
-};
+        const nazwa = linkElement
+            ? element.childNodes[0].textContent.trim()
+            : element.textContent.trim();
 
-        prezenty.push(prezent);
-    });
+        const link = linkElement
+            ? linkElement.href
+            : "";
 
-    localStorage.setItem(
-        "lista_" + ZalogowanyUzytkownik,
-        JSON.stringify(prezenty)
-    );
+        const zapisano = await zapiszPrezent(
+            ZalogowanyUzytkownik,
+            nazwa,
+            link
+        );
+
+        if (!zapisano) {
+            alert("Nie udało się zapisać listy.");
+            return;
+        }
+    }
+
     alert("Twoja lista została zapisana!");
 });
 
