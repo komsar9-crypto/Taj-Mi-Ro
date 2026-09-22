@@ -112,37 +112,31 @@ if (uczestnicy.includes(imie)) {
 
  listaBox.style.display = "block";
 
-        const mojaZapisanaLista = localStorage.getItem(
-            "lista_" + ZalogowanyUzytkownik
-        );
+      const mojaZapisanaLista = await pobierzListeZyczen(
+    ZalogowanyUzytkownik
+);
 
-        mojaLista.innerHTML = "";
+mojaLista.innerHTML = "";
 
-        if (mojaZapisanaLista) {
+mojaZapisanaLista.forEach(function(prezent) {
 
-            const prezenty = JSON.parse(mojaZapisanaLista);
+    const element = document.createElement("li");
 
-            prezenty.forEach(function(prezent) {
+    element.textContent = prezent.Prezent + " ";
 
-                const element = document.createElement("li");
+    if (prezent.link) {
 
-                element.textContent = prezent.nazwa + " ";
-                
-                if (prezent.link !== "") {
-   
-                   const linkElement = document.createElement("a");
-              
-                   linkElement.href = prezent.link;
-                   linkElement.textContent = "[link]";
-                   linkElement.target = "_blank";
+        const linkElement = document.createElement("a");
 
-                   element.appendChild(linkElement);
+        linkElement.href = prezent.link;
+        linkElement.textContent = "[link]";
+        linkElement.target = "_blank";
 
-                  }
+        element.appendChild(linkElement);
+    }
 
-                mojaLista.appendChild(element);
-            });
-        }
+    mojaLista.appendChild(element);
+}); 
 
     przycisklosuj.style.display = "block";
 
