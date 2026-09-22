@@ -72,13 +72,15 @@ async function zapiszPrezent(imie, nazwa, link) {
             "Prezent": nazwa,
             "link": link
         });
+        .select("id");
+        .single();
 
     if (error) {
         console.error("Błąd zapisywania prezentu:", error);
-        return false;
+        return null;
     }
 
-    return true;
+    return data.id;
 }
 // Pobieranie elementów strony aby móc nimi sterować w JvaScript //
 
@@ -316,22 +318,23 @@ przyciskZapisz.addEventListener("click", async function() {
                 ? linkElement.href
                 : "";
 
-            const zapisano = await zapiszPrezent(
+            const noweId = await zapiszPrezent(
                 ZalogowanyUzytkownik,
                 nazwa,
                 link
             );
 
-            if (!zapisano) {
+            if (!noweId) {
                 alert("Nie udało się zapisać listy.");
                 return;
             }
+
+            element.dataset.id = noweId;
         }
     }
 
     alert("Twoja lista została zapisana!");
 });
-
 let trybEdycji = false;
 
 przyciskEdytuj.addEventListener("click", function() {
