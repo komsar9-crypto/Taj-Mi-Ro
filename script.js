@@ -300,25 +300,32 @@ przyciskZapisz.addEventListener("click", async function() {
 
     for (const element of elementy) {
 
-        const linkElement = element.querySelector("a");
+        const id = element.dataset.id;
 
-        const nazwa = linkElement
-            ? element.childNodes[0].textContent.trim()
-            : element.textContent.trim();
+        // Jeżeli prezent nie ma id,
+        // oznacza to, że jest nowy
+        if (!id) {
 
-        const link = linkElement
-            ? linkElement.href
-            : "";
+            const linkElement = element.querySelector("a");
 
-        const zapisano = await zapiszPrezent(
-            ZalogowanyUzytkownik,
-            nazwa,
-            link
-        );
+            const nazwa = linkElement
+                ? element.childNodes[0].textContent.trim()
+                : element.textContent.trim();
 
-        if (!zapisano) {
-            alert("Nie udało się zapisać listy.");
-            return;
+            const link = linkElement
+                ? linkElement.href
+                : "";
+
+            const zapisano = await zapiszPrezent(
+                ZalogowanyUzytkownik,
+                nazwa,
+                link
+            );
+
+            if (!zapisano) {
+                alert("Nie udało się zapisać listy.");
+                return;
+            }
         }
     }
 
