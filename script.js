@@ -51,6 +51,19 @@ async function zapiszWylosowanaOsobe(imie, wylosowanaOsoba) {
 
     return true;
 }
+async function pobierzListeZyczen(imie) {
+    const { data, error } = await supabase1
+        .from("Prezenty")
+        .select("Prezent, link")
+        .eq("imię", imie);
+
+    if (error) {
+        console.error("Błąd pobierania listy życzeń:", error);
+        return [];
+    }
+
+    return data;
+}
 // Pobieranie elementów strony aby móc nimi sterować w JvaScript //
 
 const poleImie = document.getElementById("imie");
