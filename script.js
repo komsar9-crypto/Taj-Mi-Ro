@@ -54,7 +54,7 @@ async function zapiszWylosowanaOsobe(imie, wylosowanaOsoba) {
 async function pobierzListeZyczen(imie) {
     const { data, error } = await supabase1
         .from("Prezenty")
-        .select("Prezent, link")
+        .select("id, Prezent, link")
         .eq("imię", imie);
 
     if (error) {
@@ -121,6 +121,8 @@ mojaLista.innerHTML = "";
 mojaZapisanaLista.forEach(function(prezent) {
 
     const element = document.createElement("li");
+
+    element.dataset.id = prezent.id;
 
     element.textContent = prezent.Prezent + " ";
 
