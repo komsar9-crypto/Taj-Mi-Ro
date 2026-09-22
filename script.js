@@ -71,8 +71,8 @@ async function zapiszPrezent(imie, nazwa, link) {
             "imię": imie,
             "Prezent": nazwa,
             "link": link
-        });
-        .select("id");
+        })
+        .select("id")
         .single();
 
     if (error) {
