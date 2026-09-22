@@ -64,6 +64,22 @@ async function pobierzListeZyczen(imie) {
 
     return data;
 }
+async function zapiszPrezent(imie, nazwa, link) {
+    const { error } = await supabase1
+        .from("Prezenty")
+        .insert({
+            "imię": imie,
+            "Prezent": nazwa,
+            "link": link
+        });
+
+    if (error) {
+        console.error("Błąd zapisywania prezentu:", error);
+        return false;
+    }
+
+    return true;
+}
 // Pobieranie elementów strony aby móc nimi sterować w JvaScript //
 
 const poleImie = document.getElementById("imie");
