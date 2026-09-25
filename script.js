@@ -79,6 +79,8 @@ async function zapiszPrezent(imie, nazwa, link) {
         console.error("Błąd zapisywania prezentu:", error);
         return null;
     }
+    return data.id;
+}
 async function usunPrezent(id) {
     const { error } = await supabase1
         .from("Prezenty")
@@ -93,8 +95,6 @@ async function usunPrezent(id) {
     return true;
 }
 
-    return data.id;
-}
 // Pobieranie elementów strony aby móc nimi sterować w JvaScript //
 
 const poleImie = document.getElementById("imie");
