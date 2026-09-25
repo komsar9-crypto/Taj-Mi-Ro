@@ -73,7 +73,7 @@ input {
 ul {
 color: black;
  display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     width: 500px;
     margin: 20px auto;
     padding: 0;
