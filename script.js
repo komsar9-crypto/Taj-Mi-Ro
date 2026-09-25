@@ -79,6 +79,19 @@ async function zapiszPrezent(imie, nazwa, link) {
         console.error("Błąd zapisywania prezentu:", error);
         return null;
     }
+    async function usunPrezent(id) {
+    const { error } = await supabase1
+        .from("Prezenty")
+        .delete()
+        .eq("id", id);
+
+    if (error) {
+        console.error("Błąd usuwania prezentu:", error);
+        return false;
+    }
+
+    return true;
+}
 
     return data.id;
 }
