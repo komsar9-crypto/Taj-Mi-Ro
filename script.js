@@ -83,19 +83,21 @@ async function zapiszPrezent(imie, nazwa, link) {
     return data.id;
 }
 async function usunPrezent(id) {
-    const { error } = await supabase1
+    const { data, error } = await supabase1
         .from("Prezenty")
         .delete()
-        .eq("id", id);
+        .eq("id", id)
+        .select();
 
     if (error) {
         console.error("Błąd usuwania prezentu:", error);
         return false;
     }
 
-    return true;
-}
+    console.log("Usunięte rekordy:", data);
 
+    return data.length > 0;
+}
 // Pobieranie elementów strony aby móc nimi sterować w JvaScript //
 
 const poleImie = document.getElementById("imie");
