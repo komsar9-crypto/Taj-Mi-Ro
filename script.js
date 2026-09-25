@@ -368,6 +368,7 @@ przyciskUsun.classList.add("przyciskUsun");
 przyciskUsun.addEventListener("click", async function() {
 
     const id = element.dataset.id;
+    console.log("Usuwam prezent o ID:", id);
 
     if (id) {
 
