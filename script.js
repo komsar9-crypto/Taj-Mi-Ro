@@ -160,58 +160,59 @@ mojaZapisanaLista.forEach(function(prezent) {
 
     przycisklosuj.style.display = "block";
 
-    const zapisanaOsoba = await pobierzWylosowanaOsobe(
+      const zapisanaOsoba = await pobierzWylosowanaOsobe(
         ZalogowanyUzytkownik
-);
+    );
 
-if (zapisanaOsoba) {
+    if (zapisanaOsoba) {
 
-    WynikLosowania.textContent =
-        "Twoją osobą jest " + zapisanaOsoba +
-        " a oto jej lista życzeń:";
+        WynikLosowania.textContent =
+            "Twoją osobą jest " + zapisanaOsoba +
+            " a oto jej lista życzeń:";
 
-    przycisklosuj.style.display = "none";
+        przycisklosuj.style.display = "none";
 
-   const zapisanaLista = await pobierzListeZyczen(
-    zapisanaOsoba
-);
+        const zapisanaLista = await pobierzListeZyczen(
+            zapisanaOsoba
+        );
 
-listaZyczen.innerHTML = "";
+        listaZyczen.innerHTML = "";
 
-if (zapisanaLista.length > 0) {
+        if (zapisanaLista.length > 0) {
 
-    zapisanaLista.forEach(function(prezent) {
+            zapisanaLista.forEach(function(prezent) {
 
-        const element = document.createElement("li");
+                const element = document.createElement("li");
 
-        element.textContent = prezent.Prezent + " ";
+                element.textContent = prezent.Prezent + " ";
 
-        if (prezent.link) {
+                if (prezent.link) {
 
-            const linkElement = document.createElement("a");
+                    const linkElement = document.createElement("a");
 
-            linkElement.href = prezent.link;
-            linkElement.textContent = "[link]";
-            linkElement.target = "_blank";
+                    linkElement.href = prezent.link;
+                    linkElement.textContent = "[link]";
+                    linkElement.target = "_blank";
 
-            element.appendChild(linkElement);
+                    element.appendChild(linkElement);
+                }
+
+                listaZyczen.appendChild(element);
+
+            });
+
+        } else {
+
+            listaZyczen.innerHTML =
+                "<li>Ta osoba nie ma jeszcze zapisanej listy.</li>";
+
         }
 
-        listaZyczen.appendChild(element);
+    } else {
 
-    });
+        powitanie.textContent = "Nie znaleziono takiej osoby";
+    }
 
-} else {
-
-    listaZyczen.innerHTML =
-        "<li>Ta osoba nie ma jeszcze zapisanej listy.</li>";
-
-}
-
-} else {
-
-    powitanie.textContent = "Nie znaleziono takiej osoby";
-}
 });
 //===Losowanie===//
 
