@@ -172,23 +172,21 @@ if (zapisanaOsoba) {
 
     przycisklosuj.style.display = "none";
 
-    const zapisanaLista = localStorage.getItem(
-        "lista_" + zapisanaOsoba
-    );
+   const zapisanaLista = await pobierzListeZyczen(
+    zapisanaOsoba
+);
 
-    listaZyczen.innerHTML = "";
+listaZyczen.innerHTML = "";
 
-    if (zapisanaLista) {
+if (zapisanaLista.length > 0) {
 
-        const prezenty = JSON.parse(zapisanaLista);
-
-     prezenty.forEach(function(prezent) {
+    zapisanaLista.forEach(function(prezent) {
 
         const element = document.createElement("li");
 
-        element.textContent = prezent.nazwa + " "; 
-   
-        if (prezent.link !== "") {
+        element.textContent = prezent.Prezent + " ";
+
+        if (prezent.link) {
 
             const linkElement = document.createElement("a");
 
@@ -197,17 +195,17 @@ if (zapisanaOsoba) {
             linkElement.target = "_blank";
 
             element.appendChild(linkElement);
- } 
+        }
 
-  listaZyczen.appendChild(element);
+        listaZyczen.appendChild(element);
 
- });
+    });
 
-    } else {
+} else {
 
-        listaZyczen.innerHTML =
-            "<li>Ta osoba nie ma jeszcze zapisanej listy.</li>";
-    }
+    listaZyczen.innerHTML =
+        "<li>Ta osoba nie ma jeszcze zapisanej listy.</li>";
+
 }
 
 } else {
