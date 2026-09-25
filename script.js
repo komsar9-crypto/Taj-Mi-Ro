@@ -360,16 +360,29 @@ przyciskEdytuj.addEventListener("click", function() {
 
         if (trybEdycji) {
 
-            const przyciskUsun = document.createElement("button");
+       const przyciskUsun = document.createElement("button");
 
-            przyciskUsun.textContent = "Usuń";
-            przyciskUsun.classList.add("przyciskUsun");
+przyciskUsun.textContent = "Usuń";
+przyciskUsun.classList.add("przyciskUsun");
 
-            przyciskUsun.addEventListener("click", function() {
-                element.remove();
-            });
+przyciskUsun.addEventListener("click", async function() {
 
-            element.appendChild(przyciskUsun);
+    const id = element.dataset.id;
+
+    if (id) {
+
+        const usunieto = await usunPrezent(id);
+
+        if (!usunieto) {
+            alert("Nie udało się usunąć prezentu.");
+            return;
+        }
+    }
+
+    element.remove();
+});
+
+element.appendChild(przyciskUsun);
 
         } else {
 
