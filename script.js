@@ -65,7 +65,7 @@ async function pobierzListeZyczen(imie) {
     return data;
 }
 async function zapiszPrezent(imie, nazwa, link) {
-    const { error } = await supabase1
+    const { data, error } = await supabase1
         .from("Prezenty")
         .insert({
             "imię": imie,
