@@ -1,3 +1,4 @@
+console.log("SCRIPT DZIAŁA");
 const supabaseUrl = "https://naksuazwneyfywkrcnjw.supabase.co";
 const supabaseKey = "sb_publishable_LKiNARi0BHwZkM4HofcZnA_IVsxS4Ul";
 
