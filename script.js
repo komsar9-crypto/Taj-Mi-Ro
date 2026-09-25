@@ -212,7 +212,7 @@ if (zapisanaLista.length > 0) {
 
     powitanie.textContent = "Nie znaleziono takiej osoby";
 }
-});
+);
 
 //===Losowanie===//
 
