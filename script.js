@@ -79,7 +79,7 @@ async function zapiszPrezent(imie, nazwa, link) {
         console.error("Błąd zapisywania prezentu:", error);
         return null;
     }
-    async function usunPrezent(id) {
+async function usunPrezent(id) {
     const { error } = await supabase1
         .from("Prezenty")
         .delete()
