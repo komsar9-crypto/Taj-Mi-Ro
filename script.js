@@ -82,7 +82,7 @@ async function zapiszPrezent(imie, nazwa, link) {
     return data.id;
 }
 async function usunPrezent(id) {
-    const { error } = await supabase1
+    const { data, error } = await supabase1
         .from("Prezenty")
         .delete()
         .eq("id", id);
