@@ -86,7 +86,6 @@ async function usunPrezent(id) {
         .from("Prezenty")
         .delete()
         .eq("id", id);
-        .select()
 
     if (error) {
         console.error("Błąd usuwania prezentu:", error);
