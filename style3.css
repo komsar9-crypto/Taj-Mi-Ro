@@ -1,0 +1,52 @@
+body {
+    margin: 0;
+    background-image: url("Tlo.jpeg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+    color: white;
+    text-align: center;
+}
+
+h1 {
+    color: #0b5d1e;
+    margin: 40px auto 20px;
+    font-size: 50px;
+}
+
+h2 {
+    color: #3b2815;
+    max-width: 800px;
+    margin: 25px auto;
+    padding: 0 20px;
+    font-size: 22px;
+    line-height: 1.5;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 30px auto;
+}
+
+li {
+    color: #3b2815;
+    font-size: 20px;
+    margin: 15px;
+}
+
+a {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 25px;
+    color: white;
+    background-color: #c62828;
+    text-decoration: none;
+    border-radius: 8px;
+}
+
+a:hover {
+    background-color: #a51f1f;
+}
