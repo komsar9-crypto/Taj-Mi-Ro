@@ -260,10 +260,16 @@ mojaZapisanaLista.forEach(function(prezent) {
                 "<li>Ta osoba nie ma jeszcze zapisanej listy.</li>";
 
         }
-        } else {
-            powitanie.textContent = "Nie znaleziono takiej osoby";
-         }
-}
+       } else {
+            // Jeśli zalogowany użytkownik jeszcze nikogo nie wylosował:
+            WynikLosowania.textContent = "Jeszcze nikogo nie wylosowałeś.";
+            // Powitanie zostaje nienaruszone, więc "Witaj Radek!" nadal tam będzie!
+        }
+        
+    } else {
+        // Jeśli ktoś wpisze imię, którego w ogóle nie ma na liście:
+        powitanie.textContent = "Nie ma takiej osoby na liście uczestników.";
+    }
 });
 //===Losowanie===//
 
