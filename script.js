@@ -212,7 +212,7 @@ mojaZapisanaLista.forEach(function(prezent) {
 
         powitanie.textContent = "Nie znaleziono takiej osoby";
     }
-});
+ });
 //===Losowanie===//
 
 przycisklosuj.addEventListener("click", async function() {
