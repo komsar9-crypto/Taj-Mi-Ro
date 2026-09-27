@@ -211,6 +211,7 @@ mojaZapisanaLista.forEach(function(prezent) {
     } else {
 
         powitanie.textContent = "Nie znaleziono takiej osoby";
+    }
 });
 //===Losowanie===//
 
