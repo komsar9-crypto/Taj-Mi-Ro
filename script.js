@@ -160,7 +160,7 @@ mojaZapisanaLista.forEach(function(prezent) {
 
     przycisklosuj.style.display = "block";
 
-      const zapisanaOsoba = await pobierzWylosowanaOsobe(
+       const zapisanaOsoba = await pobierzWylosowanaOsobe(
         ZalogowanyUzytkownik
     );
 
