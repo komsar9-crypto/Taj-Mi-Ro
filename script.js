@@ -10,6 +10,13 @@ const bramkaHasla = document.getElementById("bramkaHasla");
 const stronaGlowna = document.getElementById("stronaGlowna");
 const komunikatHasla = document.getElementById("komunikatHasla");
 
+if (localStorage.getItem("dostepDoStrony") === "true") {
+
+    bramkaHasla.style.display = "none";
+    stronaGlowna.style.display = "block";
+
+}
+
 przyciskWejdz.addEventListener("click", async function() {
 
     const haslo = poleHaslo.value;
@@ -31,6 +38,9 @@ przyciskWejdz.addEventListener("click", async function() {
     }
 
     if (data === true) {
+
+        localStorage.setItem("dostepDoStrony", "true");
+        
         bramkaHasla.style.display = "none";
         stronaGlowna.style.display = "block";
     } else {
