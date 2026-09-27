@@ -260,11 +260,6 @@ mojaZapisanaLista.forEach(function(prezent) {
                 "<li>Ta osoba nie ma jeszcze zapisanej listy.</li>";
 
         }
-
-    } else {
-
-        powitanie.textContent = "Nie znaleziono takiej osoby";
-    }
 }
 });
 //===Losowanie===//
