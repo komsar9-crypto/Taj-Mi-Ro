@@ -262,7 +262,7 @@ mojaZapisanaLista.forEach(function(prezent) {
         }
        } else {
             // Jeśli zalogowany użytkownik jeszcze nikogo nie wylosował:
-            WynikLosowania.textContent = "Jeszcze nikogo nie wylosowałeś.";
+            WynikLosowania.textContent = "Jeszcze nikogo nie wylosowano.";
             // Powitanie zostaje nienaruszone, więc "Witaj Radek!" nadal tam będzie!
         }
         
