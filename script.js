@@ -4,6 +4,49 @@ const supabaseKey = "sb_publishable_LKiNARi0BHwZkM4HofcZnA_IVsxS4Ul";
 
 const supabase1 = window.supabase.createClient(supabaseUrl, supabaseKey);
 
+const poleHaslo = document.getElementById("haslo");
+const przyciskWejdz = document.getElementById("wejdz");
+const bramkaHasla = document.getElementById("bramkaHasla");
+const stronaGlowna = document.getElementById("stronaGlowna");
+const komunikatHasla = document.getElementById("komunikatHasla");
+
+przyciskWejdz.addEventListener("click", async function() {
+
+    const haslo = poleHaslo.value;
+
+    if (haslo === "") {
+        komunikatHasla.textContent = "Wpisz hasło.";
+        return;
+    }
+
+    const { data, error } = await supabase1
+        .rpc("sprawdz_haslo", {
+            wpisane_haslo: haslo
+        });
+
+    if (error) {
+        console.error("Błąd sprawdzania hasła:", error);
+        komunikatHasla.textContent = "Wystąpił błąd.";
+        return;
+    }
+
+    if (data === true) {
+        bramkaHasla.style.display = "none";
+        stronaGlowna.style.display = "block";
+    } else {
+        komunikatHasla.textContent = "Nieprawidłowe hasło.";
+        poleHaslo.value = "";
+    }
+});
+
+poleHaslo.addEventListener("keydown", function(event) {
+
+    if (event.key === "Enter") {
+        przyciskWejdz.click();
+    }
+
+});
+
 let uczestnicy = [];
 async function pobierzUczestnikow() {
     const { data, error } = await supabase1
