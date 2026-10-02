@@ -297,63 +297,122 @@ mojaZapisanaLista.forEach(function(prezent) {
 
 przycisklosuj.addEventListener("click", async function() {
 
-    const zapisanaOsoba = localStorage.getItem(
-    "wylosowana_" + ZalogowanyUzytkownik
-);
-
-     const OsobyDoWylosowania = [...uczestnicy];
-
-    OsobyDoWylosowania.splice(
-        OsobyDoWylosowania.indexOf(ZalogowanyUzytkownik),
-        1
+    // Sprawdzamy, czy użytkownik już wcześniej wylosował osobę
+    const zapisanaOsoba = await pobierzWylosowanaOsobe(
+        ZalogowanyUzytkownik
     );
 
-    
-        const indeks = Math.floor(
-            Math.random() * OsobyDoWylosowania.length
-        );
+    if (zapisanaOsoba) {
 
-       const WylosowanaOsoba = OsobyDoWylosowania[indeks];
+        alert("Masz już wylosowaną osobę: " + zapisanaOsoba);
+        return;
+    }
 
-    const zapisano = await zapiszWylosowanaOsobe(
-    ZalogowanyUzytkownik,
-    WylosowanaOsoba
-);
 
-if (!zapisano) {
-    alert("Nie udało się zapisać wyniku losowania.");
-    return;
-}
+    // Pobieramy osoby, które zostały już wylosowane przez innych
+    const juzWylosowane = await pobierzWszystkieWylosowaneOsoby();
 
- WynikLosowania.textContent = "Twoją osobą jest " + WylosowanaOsoba + " a oto jej lista życzeń:";
 
-const zapisanaLista = localStorage.getItem(
-           "lista_" + WylosowanaOsoba
-       );
+    // Tworzymy pulę wszystkich uczestników
+    const OsobyDoWylosowania = uczestnicy.filter(function(osoba) {
 
- listaZyczen.innerHTML = "";
+        // Nie można wylosować samego siebie
+        if (osoba === ZalogowanyUzytkownik) {
+            return false;
+        }
 
- if (zapisanaLista) {
+        // Nie można wylosować osoby, która już została wylosowana
+        if (juzWylosowane.includes(osoba)) {
+            return false;
+        }
 
-    const prezenty = JSON.parse(zapisanaLista);
-
-    prezenty.forEach(function(prezent) {
-
-        const element = document.createElement("li");
-
-        element.textContent = prezent;
-
-        listaZyczen.appendChild(element);
+        return true;
     });
 
-} else {
 
-    listaZyczen.innerHTML =
-        "<li>Ta osoba nie ma jeszcze zapisanej listy.</li>";
+    console.log("Zalogowany użytkownik:", ZalogowanyUzytkownik);
+    console.log("Już wylosowane:", juzWylosowane);
+    console.log("Dostępne osoby:", OsobyDoWylosowania);
 
-}
-    
-przycisklosuj.style.display="none";
+
+    // Jeżeli nie ma już nikogo do wylosowania
+    if (OsobyDoWylosowania.length === 0) {
+
+        alert("Nie ma już żadnej osoby, którą można wylosować.");
+        return;
+    }
+
+
+    // Losujemy osobę z dostępnej puli
+    const indeks = Math.floor(
+        Math.random() * OsobyDoWylosowania.length
+    );
+
+    const WylosowanaOsoba = OsobyDoWylosowania[indeks];
+
+
+    // Zapisujemy wynik w Supabase
+    const zapisano = await zapiszWylosowanaOsobe(
+        ZalogowanyUzytkownik,
+        WylosowanaOsoba
+    );
+
+
+    if (!zapisano) {
+
+        alert("Nie udało się zapisać wyniku losowania.");
+        return;
+    }
+
+
+    // Wyświetlamy wynik
+    WynikLosowania.textContent =
+        "Twoją osobą jest " + WylosowanaOsoba +
+        " a oto jej lista życzeń:";
+
+
+    // Pobieramy prawdziwą listę życzeń z Supabase
+    const zapisanaLista = await pobierzListeZyczen(
+        WylosowanaOsoba
+    );
+
+
+    listaZyczen.innerHTML = "";
+
+
+    if (zapisanaLista.length > 0) {
+
+        zapisanaLista.forEach(function(prezent) {
+
+            const element = document.createElement("li");
+
+            element.textContent = prezent.Prezent + " ";
+
+
+            if (prezent.link) {
+
+                const linkElement = document.createElement("a");
+
+                linkElement.href = prezent.link;
+                linkElement.textContent = "[link]";
+                linkElement.target = "_blank";
+
+                element.appendChild(linkElement);
+            }
+
+
+            listaZyczen.appendChild(element);
+        });
+
+    } else {
+
+        listaZyczen.innerHTML =
+            "<li>Ta osoba nie ma jeszcze zapisanej listy.</li>";
+    }
+
+
+    // Ukrywamy przycisk po udanym losowaniu
+    przycisklosuj.style.display = "none";
 });
 
 
