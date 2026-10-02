@@ -79,16 +79,38 @@ const uczestnicyGotowi = pobierzUczestnikow();
 
 async function pobierzWylosowanaOsobe(imie) {
     const { data, error } = await supabase1
-          .from("Losowanie")
-          .select("Wylosowano")
-          .eq("imię", imie)
-          .single();
+        .from("Losowanie")
+        .select("Wylosowano")
+        .eq("imię", imie)
+        .maybeSingle();
 
     if (error) {
         console.error("Błąd pobierania losowania:", error);
+        return null;
     }
+
+    if (!data) {
+        return null;
+    }
+
     return data.Wylosowano;
-};
+}
+async function pobierzWszystkieWylosowaneOsoby() {
+
+    const { data, error } = await supabase1
+        .from("Losowanie")
+        .select("Wylosowano")
+        .not("Wylosowano", "is", null);
+
+    if (error) {
+        console.error("Błąd pobierania wylosowanych osób:", error);
+        return [];
+    }
+
+    return data.map(function(wiersz) {
+        return wiersz.Wylosowano;
+    });
+}
 
 async function zapiszWylosowanaOsobe(imie, wylosowanaOsoba) {
     const { error } = await supabase1
