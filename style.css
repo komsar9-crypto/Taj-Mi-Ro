@@ -146,22 +146,26 @@ color: #3b2815;
 /* Lista prezentów */
 #mojaLista,
 #listaZyczen {
+    margin: 0;
+    padding-left: 30px;
+    text-align: left;
     font-family: Arial, Helvetica, sans-serif;
     font-style: normal;
     font-weight: normal;
     list-style-type: disc;
-    padding-left: 25px;
-    text-align: left;
 }
 
 /* Odstępy między prezentami */
 #mojaLista li,
 #listaZyczen li {
     display: list-item;
+    margin: 0 0 8px 0;
+    padding: 0;
+    text-align: left;
     font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
     font-style: normal;
     font-weight: normal;
-    margin-bottom: 8px;
     line-height: 1.5;
     overflow-wrap: anywhere;
 }
