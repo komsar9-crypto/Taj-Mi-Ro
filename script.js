@@ -551,7 +551,7 @@ polePrezent.addEventListener("keydown", function(event){
 }
 });
 
-const dataDocelowa = new Date("2026-10-30T18:00:00");
+const dataDocelowa = new Date("2026-10-30T23:59:59");
 
 function odliczanie() {
     const teraz = new Date();
