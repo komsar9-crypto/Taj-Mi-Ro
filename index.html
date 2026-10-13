@@ -45,8 +45,26 @@
        </ul>
 
 <div id="logowanieBox">
-   <input type="text" id="imie" placeholder="Wpisz swoje imię">
-   <button id="logowanie">Zaloguj</button>
+   <h2>🎅 Twoje konto</h2>
+
+    <input
+        type="text"
+        id="imie"
+        placeholder="Wpisz swoje imię"
+        autocomplete="username"
+    >
+
+    <input
+        type="password"
+        id="hasloKonta"
+        placeholder="Ustaw hasło lub wpisz istniejące"
+        autocomplete="current-password"
+    >
+
+    <button id="utworzKonto">Utwórz konto</button>
+    <button id="logowanie">Zaloguj się</button>
+
+    <p id="komunikatAuth"></p>
 </div>  
    <h2 id="powitanie"></h2>
    <button id="losuj" style="display:none;">Losuj</button>
