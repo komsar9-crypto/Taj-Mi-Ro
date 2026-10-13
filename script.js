@@ -2,7 +2,17 @@ console.log("SCRIPT DZIAŁA");
 const supabaseUrl = "https://naksuazwneyfywkrcnjw.supabase.co";
 const supabaseKey = "sb_publishable_LKiNARi0BHwZkM4HofcZnA_IVsxS4Ul";
 
-const supabase1 = window.supabase.createClient(supabaseUrl, supabaseKey);
+const supabase1 = window.supabase.createClient(
+    supabaseUrl,
+    supabaseKey,
+    {
+        auth: {
+            persistSession: false,
+            autoRefreshToken: false,
+            detectSessionInUrl: false
+        }
+    }
+);
 
 const poleHaslo = document.getElementById("haslo");
 const przyciskWejdz = document.getElementById("wejdz");
