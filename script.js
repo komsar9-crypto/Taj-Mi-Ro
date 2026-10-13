@@ -122,19 +122,27 @@ async function pobierzWszystkieWylosowaneOsoby() {
     });
 }
 
-async function zapiszWylosowanaOsobe(imie, wylosowanaOsoba) {
-    const { error } = await supabase1
+async function zapiszWylosowanaOsobe(imie, wylosowanaOsoba) { 
+    const { data, error } = await supabase1
         .from("Losowanie")
-        .update({
+        .update({ 
             Wylosowano: wylosowanaOsoba
-        })
-        .eq("imię", imie);
-
+        }) 
+        .eq("imię", imie)
+        .is("Wylosowano", null)
+        .select();
     if (error) {
         console.error("Błąd zapisywania losowania:", error);
         return false;
     }
-
+    if (!data || data.length === 0) {
+        console.error(
+            "Nie zapisano losowania. Nie znaleziono dostępnego rekordu dla:",
+            imie
+        );
+        return false;
+    }
+    console.log("Zapisano losowanie:", data[0]);
     return true;
 }
 async function pobierzListeZyczen(imie) {
