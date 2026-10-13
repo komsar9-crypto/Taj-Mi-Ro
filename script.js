@@ -192,107 +192,259 @@ const przyciskEdytuj = document.getElementById("edytuj");
 
 let ZalogowanyUzytkownik = "";
 
-przycisk.addEventListener("click", async function() {
-    await uczestnicyGotowi;
-    const imie = poleImie.value;
-if (uczestnicy.includes(imie)) {
+const poleHasloKonta = document.getElementById("hasloKonta");
+const przyciskUtworzKonto = document.getElementById("utworzKonto");
+const komunikatAuth = document.getElementById("komunikatAuth");
 
-    ZalogowanyUzytkownik = imie;
+// Tworzymy wewnętrzny adres dla każdego uczestnika.
+// Nie jest to prawdziwy adres e-mail.
+function utworzEmailUczestnika(id) {
+    return "uczestnik-" + id + "@tajnymikolaj.invalid";
+}
 
-    powitanie.textContent = "Witaj " + imie +"!";
+// Pobieramy ID uczestnika na podstawie jego imienia.
+async function pobierzIdUczestnika(imie) {
+    const { data, error } = await supabase1
+        .from("Uczestnicy")
+        .select("id, Imiona")
+        .eq("Imiona", imie)
+        .maybeSingle();
 
-    logowanieBox.style.display = "none";
-
- listaBox.style.display = "block";
-
-      const mojaZapisanaLista = await pobierzListeZyczen(
-    ZalogowanyUzytkownik
-);
-
-mojaLista.innerHTML = "";
-
-mojaZapisanaLista.forEach(function(prezent) {
-
-    const element = document.createElement("li");
-
-    element.dataset.id = prezent.id;
-
-    element.textContent = prezent.Prezent + " ";
-
-    if (prezent.link) {
-
-        const linkElement = document.createElement("a");
-
-        linkElement.href = prezent.link;
-        linkElement.textContent = "[link]";
-        linkElement.target = "_blank";
-
-        element.appendChild(linkElement);
+    if (error) {
+        console.error("Błąd pobierania uczestnika:", error);
+        return null;
     }
 
-    mojaLista.appendChild(element);
-}); 
+    return data;
+}
+
+// Wyświetlamy stronę zalogowanego uczestnika.
+async function pokazKontoUczestnika(imie) {
+    ZalogowanyUzytkownik = imie;
+
+    komunikatAuth.textContent = "";
+    powitanie.textContent = "Witaj " + imie + "!";
+
+    logowanieBox.style.display = "none";
+    listaBox.style.display = "block";
+
+    const mojaZapisanaLista = await pobierzListeZyczen(imie);
+
+    mojaLista.innerHTML = "";
+
+    mojaZapisanaLista.forEach(function(prezent) {
+        const element = document.createElement("li");
+
+        element.dataset.id = prezent.id;
+        element.textContent = prezent.Prezent + " ";
+
+        if (prezent.link) {
+            const linkElement = document.createElement("a");
+
+            linkElement.href = prezent.link;
+            linkElement.textContent = "[link]";
+            linkElement.target = "_blank";
+            linkElement.rel = "noopener noreferrer";
+
+            element.appendChild(linkElement);
+        }
+
+        mojaLista.appendChild(element);
+    });
 
     przycisklosuj.style.display = "block";
 
-       const zapisanaOsoba = await pobierzWylosowanaOsobe(
-        ZalogowanyUzytkownik
-    );
+    const zapisanaOsoba = await pobierzWylosowanaOsobe(imie);
 
     if (zapisanaOsoba) {
-
         WynikLosowania.textContent =
             "Twoją osobą jest " + zapisanaOsoba +
             " a oto jej lista życzeń:";
 
         przycisklosuj.style.display = "none";
 
-        const zapisanaLista = await pobierzListeZyczen(
-            zapisanaOsoba
-        );
+        const zapisanaLista = await pobierzListeZyczen(zapisanaOsoba);
 
         listaZyczen.innerHTML = "";
 
         if (zapisanaLista.length > 0) {
-
             zapisanaLista.forEach(function(prezent) {
-
                 const element = document.createElement("li");
 
                 element.textContent = prezent.Prezent + " ";
 
                 if (prezent.link) {
-
                     const linkElement = document.createElement("a");
 
                     linkElement.href = prezent.link;
                     linkElement.textContent = "[link]";
                     linkElement.target = "_blank";
+                    linkElement.rel = "noopener noreferrer";
 
                     element.appendChild(linkElement);
                 }
 
                 listaZyczen.appendChild(element);
-
             });
-
         } else {
-
             listaZyczen.innerHTML =
                 "<li>Ta osoba nie ma jeszcze zapisanej listy.</li>";
-
         }
-       } else {
-            // Jeśli zalogowany użytkownik jeszcze nikogo nie wylosował:
-            WynikLosowania.textContent = "Jeszcze nikogo nie wylosowano.";
-            // Powitanie zostaje nienaruszone, więc "Witaj Radek!" nadal tam będzie!
-        }
-        
     } else {
-        // Jeśli ktoś wpisze imię, którego w ogóle nie ma na liście:
-        powitanie.textContent = "Nie ma takiej osoby na liście uczestników.";
+        WynikLosowania.textContent = "Jeszcze nikogo nie wylosowano.";
+        listaZyczen.innerHTML = "";
     }
+}
+
+// Rejestracja nowego konta.
+przyciskUtworzKonto.addEventListener("click", async function() {
+    await uczestnicyGotowi;
+
+    const imie = poleImie.value.trim();
+    const haslo = poleHasloKonta.value;
+
+    if (!imie || !haslo) {
+        komunikatAuth.textContent = "Wpisz imię i hasło.";
+        return;
+    }
+
+    if (haslo.length < 6) {
+        komunikatAuth.textContent =
+            "Hasło musi mieć co najmniej 6 znaków.";
+        return;
+    }
+
+    const uczestnik = await pobierzIdUczestnika(imie);
+
+    if (!uczestnik) {
+        komunikatAuth.textContent =
+            "Nie znaleziono takiego uczestnika. Sprawdź pisownię imienia.";
+        return;
+    }
+
+    komunikatAuth.textContent = "Tworzenie konta...";
+
+    const { data, error } = await supabase1.auth.signUp({
+        email: utworzEmailUczestnika(uczestnik.id),
+        password: haslo,
+        options: {
+            data: {
+                uczestnik_id: uczestnik.id
+            }
+        }
+    });
+
+    if (error) {
+        console.error("Błąd rejestracji:", error);
+        komunikatAuth.textContent =
+            "Nie udało się utworzyć konta. Możliwe, że konto już istnieje. Spróbuj się zalogować.";
+        return;
+    }
+
+    if (!data.session) {
+        komunikatAuth.textContent =
+            "Konto utworzono, ale nie rozpoczęto sesji. Sprawdź ustawienia potwierdzania e-maili w Supabase.";
+        return;
+    }
+
+    await pokazKontoUczestnika(imie);
 });
+
+// Logowanie do istniejącego konta.
+przycisk.addEventListener("click", async function() {
+    await uczestnicyGotowi;
+
+    const imie = poleImie.value.trim();
+    const haslo = poleHasloKonta.value;
+
+    if (!imie || !haslo) {
+        komunikatAuth.textContent = "Wpisz imię i hasło.";
+        return;
+    }
+
+    const uczestnik = await pobierzIdUczestnika(imie);
+
+    if (!uczestnik) {
+        komunikatAuth.textContent =
+            "Nie znaleziono takiego uczestnika. Sprawdź pisownię imienia.";
+        return;
+    }
+
+    komunikatAuth.textContent = "Logowanie...";
+
+    const { data, error } = await supabase1.auth.signInWithPassword({
+        email: utworzEmailUczestnika(uczestnik.id),
+        password: haslo
+    });
+
+    if (error) {
+        console.error("Błąd logowania:", error);
+        komunikatAuth.textContent =
+            "Nie udało się zalogować. Sprawdź imię i hasło.";
+        return;
+    }
+
+    // Sprawdzamy, czy zalogowane konto jest przypisane do tego uczestnika.
+    const { data: powiazanie, error: bladPowiazania } = await supabase1
+        .from("KontaUczestnikow")
+        .select("uczestnik_id")
+        .eq("user_id", data.user.id)
+        .maybeSingle();
+
+    if (bladPowiazania || !powiazanie ||
+        Number(powiazanie.uczestnik_id) !== Number(uczestnik.id)) {
+
+        await supabase1.auth.signOut();
+
+        komunikatAuth.textContent =
+            "Konto nie jest prawidłowo przypisane do uczestnika.";
+        return;
+    }
+
+    await pokazKontoUczestnika(imie);
+});
+
+// Przywracamy sesję, jeśli użytkownik był już zalogowany.
+async function przywrocSesje() {
+    const { data, error } = await supabase1.auth.getSession();
+
+    if (error) {
+        console.error("Błąd sprawdzania sesji:", error);
+        return;
+    }
+
+    if (!data.session) {
+        return;
+    }
+
+    const userId = data.session.user.id;
+
+    const { data: powiazanie, error: bladPowiazania } = await supabase1
+        .from("KontaUczestnikow")
+        .select("uczestnik_id")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+    if (bladPowiazania || !powiazanie) {
+        console.error("Nie znaleziono powiązania konta z uczestnikiem.");
+        return;
+    }
+
+    const { data: uczestnik, error: bladUczestnika } = await supabase1
+        .from("Uczestnicy")
+        .select("Imiona")
+        .eq("id", powiazanie.uczestnik_id)
+        .maybeSingle();
+
+    if (bladUczestnika || !uczestnik) {
+        console.error("Nie znaleziono uczestnika przypisanego do konta.");
+        return;
+    }
+
+    await pokazKontoUczestnika(uczestnik.Imiona);
+}
+
+przywrocSesje();
 //===Losowanie===//
 
 przycisklosuj.addEventListener("click", async function() {
