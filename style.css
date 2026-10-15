@@ -168,3 +168,78 @@ color: #3b2815;
     line-height: 1.5;
     overflow-wrap: anywhere;
 }
+/* === KOŁO LOSOWANIA TAJNEGO MIKOŁAJA === */
+
+#koloLosowaniaBox {
+text-align: center;
+margin: 25px auto;
+max-width: 550px;
+}
+
+#koloLosowaniaBox h2 {
+color: #d4af37;
+margin-bottom: 20px;
+}
+
+#koloKontener {
+position: relative;
+width: 100%;
+max-width: 500px;
+aspect-ratio: 1 / 1;
+margin: 0 auto 20px;
+}
+
+#koloCanvas {
+display: block;
+width: 100%;
+height: 100%;
+border-radius: 50%;
+box-shadow: 0 0 0 6px #d4af37,
+0 0 0 10px #0b5d1e;
+}
+
+#wskaznikKola {
+position: absolute;
+top: -8px;
+left: 50%;
+transform: translateX(-50%);
+z-index: 2;
+width: 0;
+height: 0;
+border-left: 18px solid transparent;
+border-right: 18px solid transparent;
+border-top: 36px solid #e63946;
+filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
+}
+
+#koloLosowaniaBox #losuj {
+display: block;
+margin: 25px auto;
+padding: 14px 25px;
+font-size: 18px;
+font-weight: bold;
+cursor: pointer;
+}
+
+#koloLosowaniaBox #losuj {
+opacity: 0.6;
+cursor: not-allowed;
+}
+
+#komunikatKola {
+font-size: 20px;
+font-weight: bold;
+color: #d4af37;
+}
+
+@media (max-width: 600px) {
+#koloLosowaniaBox {
+padding: 10px;
+}
+
+#koloLosowaniaBox #losuj {
+    max-width: 100%;
+    font-size: 16px;
+}
+
+}
