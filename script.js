@@ -489,122 +489,123 @@ przywrocSesje();
 
 przycisklosuj.addEventListener("click", async function() {
 
-    // Sprawdzamy, czy użytkownik już wcześniej wylosował osobę
-    const zapisanaOsoba = await pobierzWylosowanaOsobe(
-        ZalogowanyUzytkownik
-    );
-
-    if (zapisanaOsoba) {
-
-        alert("Masz już wylosowaną osobę: " + zapisanaOsoba);
+    if (czyKoloSieKreci) {
         return;
     }
 
+    przycisklosuj.disabled = true;
 
-    // Pobieramy osoby, które zostały już wylosowane przez innych
-    const juzWylosowane = await pobierzWszystkieWylosowaneOsoby();
+    try {
 
+        // Sprawdzamy, czy użytkownik już ma wynik
+        const zapisanaOsoba = await pobierzWylosowanaOsobe(
+            ZalogowanyUzytkownik
+        );
 
-    // Tworzymy pulę wszystkich uczestników
-    const OsobyDoWylosowania = uczestnicy.filter(function(osoba) {
-
-        // Nie można wylosować samego siebie
-        if (osoba === ZalogowanyUzytkownik) {
-            return false;
+        if (zapisanaOsoba) {
+            alert("Masz już wylosowaną osobę: " + zapisanaOsoba);
+            przycisklosuj.style.display = "none";
+            return;
         }
 
-        // Nie można wylosować osoby, która już została wylosowana
-        if (juzWylosowane.includes(osoba)) {
-            return false;
-        }
+        // Pobieramy osoby już przypisane innym uczestnikom
+        const juzWylosowane = await pobierzWszystkieWylosowaneOsoby();
 
-        return true;
-    });
-
-
-    console.log("Zalogowany użytkownik:", ZalogowanyUzytkownik);
-    console.log("Już wylosowane:", juzWylosowane);
-    console.log("Dostępne osoby:", OsobyDoWylosowania);
-
-
-    // Jeżeli nie ma już nikogo do wylosowania
-    if (OsobyDoWylosowania.length === 0) {
-
-        alert("Nie ma już żadnej osoby, którą można wylosować.");
-        return;
-    }
-
-
-    // Losujemy osobę z dostępnej puli
-    const indeks = Math.floor(
-        Math.random() * OsobyDoWylosowania.length
-    );
-
-    const WylosowanaOsoba = OsobyDoWylosowania[indeks];
-
-
-    // Zapisujemy wynik w Supabase
-    const zapisano = await zapiszWylosowanaOsobe(
-        ZalogowanyUzytkownik,
-        WylosowanaOsoba
-    );
-
-
-    if (!zapisano) {
-
-        alert("Nie udało się zapisać wyniku losowania.");
-        return;
-    }
-
-
-    // Wyświetlamy wynik
-    WynikLosowania.textContent =
-        "Twoją osobą jest " + WylosowanaOsoba +
-        " a oto jej lista życzeń:";
-
-
-    // Pobieramy prawdziwą listę życzeń z Supabase
-    const zapisanaLista = await pobierzListeZyczen(
-        WylosowanaOsoba
-    );
-
-
-    listaZyczen.innerHTML = "";
-
-
-    if (zapisanaLista.length > 0) {
-
-        zapisanaLista.forEach(function(prezent) {
-
-            const element = document.createElement("li");
-
-            element.textContent = prezent.Prezent + " ";
-
-
-            if (prezent.link) {
-
-                const linkElement = document.createElement("a");
-
-                linkElement.href = prezent.link;
-                linkElement.textContent = "[link]";
-                linkElement.target = "_blank";
-
-                element.appendChild(linkElement);
-            }
-
-
-            listaZyczen.appendChild(element);
+        // Tworzymy pulę dostępnych osób
+        const OsobyDoWylosowania = uczestnicy.filter(function(osoba) {
+            return (
+                osoba !== ZalogowanyUzytkownik &&
+                !juzWylosowane.includes(osoba)
+            );
         });
 
-    } else {
+        console.log("Zalogowany użytkownik:", ZalogowanyUzytkownik);
+        console.log("Już wylosowane:", juzWylosowane);
+        console.log("Dostępne osoby:", OsobyDoWylosowania);
 
-        listaZyczen.innerHTML =
-            "<li>Ta osoba nie ma jeszcze zapisanej listy.</li>";
+        if (OsobyDoWylosowania.length === 0) {
+            alert("Nie ma już żadnej osoby, którą można wylosować.");
+            return;
+        }
+
+        // Losujemy osobę z dostępnej puli
+        const indeks = Math.floor(
+            Math.random() * OsobyDoWylosowania.length
+        );
+
+        const WylosowanaOsoba = OsobyDoWylosowania[indeks];
+
+        // Znajdujemy jej pole na kole z wszystkimi uczestnikami
+        const indeksNaKole = uczestnicy.indexOf(WylosowanaOsoba);
+
+        // Uruchamiamy animację i czekamy na jej zakończenie
+        const animacjaUdana = await animujKolo(indeksNaKole);
+
+        if (!animacjaUdana) {
+            return;
+        }
+
+        // Dopiero teraz zapisujemy wynik w Supabase
+        const zapisano = await zapiszWylosowanaOsobe(
+            ZalogowanyUzytkownik,
+            WylosowanaOsoba
+        );
+
+        if (!zapisano) {
+            alert(
+                "Nie udało się zapisać wyniku. " +
+                "Odśwież stronę i sprawdź, czy losowanie zostało zapisane."
+            );
+            return;
+        }
+
+        // Wyświetlamy wynik
+        WynikLosowania.textContent =
+            "Twoją osobą jest " + WylosowanaOsoba +
+            " a oto jej lista życzeń:";
+
+        // Pobieramy listę życzeń
+        const zapisanaLista = await pobierzListeZyczen(
+            WylosowanaOsoba
+        );
+
+        listaZyczen.innerHTML = "";
+
+        if (zapisanaLista.length > 0) {
+
+            zapisanaLista.forEach(function(prezent) {
+                const element = document.createElement("li");
+
+                element.textContent = prezent.Prezent + " ";
+
+                if (prezent.link) {
+                    const linkElement = document.createElement("a");
+
+                    linkElement.href = prezent.link;
+                    linkElement.textContent = "[link]";
+                    linkElement.target = "_blank";
+                    linkElement.rel = "noopener noreferrer";
+
+                    element.appendChild(linkElement);
+                }
+
+                listaZyczen.appendChild(element);
+            });
+
+        } else {
+            listaZyczen.innerHTML =
+                "<li>Ta osoba nie ma jeszcze zapisanej listy.</li>";
+        }
+
+        // Ukrywamy przycisk po udanym losowaniu
+        przycisklosuj.style.display = "none";
+
+    } catch (blad) {
+        console.error("Błąd podczas losowania:", blad);
+        alert("Wystąpił błąd podczas losowania. Sprawdź konsolę.");
+    } finally {
+        przycisklosuj.disabled = false;
     }
-
-
-    // Ukrywamy przycisk po udanym losowaniu
-    przycisklosuj.style.display = "none";
 });
 
 
@@ -843,62 +844,96 @@ function narysujPolaKola(ctx, canvas) {
     });
 }
 // === ANIMOWANIE KOŁA ===
-function animujKolo() {
-    const canvas = document.getElementById("koloCanvas");
-    const ctx = canvas.getContext("2d");
+function animujKolo(indeksDocelowy) {
+    return new Promise(function(resolve) {
+        const canvas = document.getElementById("koloCanvas");
+        const ctx = canvas.getContext("2d");
 
-    if (czyKoloSieKreci) {
-        return;
-    }
+        if (czyKoloSieKreci) {
+            resolve(false);
+            return;
+        }
 
-    czyKoloSieKreci = true;
+        czyKoloSieKreci = true;
 
-    const przycisk = document.getElementById("losuj");
-    const komunikat = document.getElementById("komunikatKola");
+        const przycisk = document.getElementById("losuj");
+        const komunikat = document.getElementById("komunikatKola");
 
-    przycisk.disabled = true;
-    komunikat.textContent = "🎡 Koło się kręci...";
+        przycisk.disabled = true;
+        komunikat.textContent = "🎡 Koło się kręci...";
 
-    const czasTrwania = 5000;
-    const poczatek = performance.now();
+        const liczbaOsob = uczestnicy.length;
 
-    const katPoczatkowy = aktualnyKat;
-    const pelneObroty = 8 * 2 * Math.PI;
-    const dodatkowyKat = Math.random() * 2 * Math.PI;
-    const katKoncowy = katPoczatkowy + pelneObroty + dodatkowyKat;
-
-    function krok(czasTeraz) {
-        const postep = Math.min(
-            (czasTeraz - poczatek) / czasTrwania,
-            1
-        );
-
-        // Stopniowe zwalnianie koła
-        const wygladzenie = 1 - Math.pow(1 - postep, 4);
-
-        aktualnyKat =
-            katPoczatkowy +
-            (katKoncowy - katPoczatkowy) * wygladzenie;
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        ctx.save();
-        ctx.translate(canvas.width / 2, canvas.height / 2);
-        ctx.rotate(aktualnyKat);
-        ctx.translate(-canvas.width / 2, -canvas.height / 2);
-
-        narysujPolaKola(ctx, canvas);
-
-        ctx.restore();
-
-        if (postep < 1) {
-            requestAnimationFrame(krok);
-        } else {
+        if (
+            liczbaOsob === 0 ||
+            indeksDocelowy < 0 ||
+            indeksDocelowy >= liczbaOsob
+        ) {
             czyKoloSieKreci = false;
             przycisk.disabled = false;
-            komunikat.textContent = "🎉 Koło się zatrzymało!";
+            komunikat.textContent = "Nie udało się uruchomić koła.";
+            resolve(false);
+            return;
         }
-    }
 
-    requestAnimationFrame(krok);
+        const katPola = (2 * Math.PI) / liczbaOsob;
+
+        // Środek pola wybranej osoby
+        const katOsoby = indeksDocelowy * katPola;
+
+        // Ustawiamy wybraną osobę pod górną wskazówką
+        const katDocelowy = -katOsoby;
+
+        const pelneObroty = 8 * 2 * Math.PI;
+
+        const katPoczatkowy = aktualnyKat;
+
+        // Dodatkowy obrót kończy się dokładnie na wybranej osobie
+        const roznica = (
+            katDocelowy - katPoczatkowy
+        ) % (2 * Math.PI);
+
+        const katKoncowy =
+            katPoczatkowy +
+            pelneObroty +
+            ((roznica + 2 * Math.PI) % (2 * Math.PI));
+
+        const czasTrwania = 5000;
+        const poczatek = performance.now();
+
+        function krok(czasTeraz) {
+            const postep = Math.min(
+                (czasTeraz - poczatek) / czasTrwania,
+                1
+            );
+
+            // Koło stopniowo zwalnia
+            const wygladzenie = 1 - Math.pow(1 - postep, 4);
+
+            aktualnyKat =
+                katPoczatkowy +
+                (katKoncowy - katPoczatkowy) * wygladzenie;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.save();
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+            ctx.rotate(aktualnyKat);
+            ctx.translate(-canvas.width / 2, -canvas.height / 2);
+
+            narysujPolaKola(ctx, canvas);
+
+            ctx.restore();
+
+            if (postep < 1) {
+                requestAnimationFrame(krok);
+            } else {
+                czyKoloSieKreci = false;
+                komunikat.textContent = "🎉 Koło się zatrzymało!";
+                resolve(true);
+            }
+        }
+
+        requestAnimationFrame(krok);
+    });
 }
