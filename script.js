@@ -761,3 +761,78 @@ function odliczanie() {
 
 odliczanie();
 setInterval(odliczanie, 1000);
+// === RYSOWANIE KOŁA LOSOWANIA ===
+function rysujKolo() {
+    const canvas = document.getElementById("koloCanvas");
+    const ctx = canvas.getContext("2d");
+
+// Wszystkie imiona uczestników const osoby = uczestnicy;
+
+if (!osoby || osoby.length === 0) {
+    console.log("Nie ma jeszcze listy uczestników do narysowania koła.");
+    return; 
+}
+
+const srodekX = canvas.width / 2;
+const srodekY = canvas.height / 2;
+const promien = canvas.width / 2 - 5;
+const katPola = (2 * Math.PI) / osoby.length;
+
+const kolory = [
+    "#c62828",
+    "#0b5d1e",
+    "#d4af37",
+    "#1e6091",
+    "#8e44ad",
+    "#e67e22",
+    "#2471a3",
+    "#922b21",
+    "#117864",
+    "#5b2c6f"
+];
+
+// Czyścimy poprzedni rysunek
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+// Rysujemy pola koła
+osoby.forEach(function(osoba, index) {
+    const katStart = index * katPola - Math.PI / 2;
+    const katKoniec = katStart + katPola;
+
+    ctx.beginPath();
+    ctx.moveTo(srodekX, srodekY);
+    ctx.arc(
+        srodekX,
+        srodekY,
+        promien,
+        katStart,
+        katKoniec
+    );
+    ctx.closePath();
+
+    ctx.fillStyle = kolory[index % kolory.length];
+    ctx.fill();
+
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Imię uczestnika
+    const katSrodka = katStart + katPola / 2;
+    const tekstX = srodekX + Math.cos(katSrodka) * promien * 0.65;
+    const tekstY = srodekY + Math.sin(katSrodka) * promien * 0.65;
+
+    ctx.save();
+    ctx.translate(tekstX, tekstY);
+    ctx.rotate(katSrodka + Math.PI / 2);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 16px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.fillText(osoba, 0, 0, promien * 0.55);
+    
+    ctx.restore();
+  });
+}
