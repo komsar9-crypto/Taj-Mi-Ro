@@ -285,9 +285,13 @@ async function pokazKontoUczestnika(imie) {
     });
 
     const koloLosowaniaBox = document.getElementById("koloLosowaniaBox");
-
-koloLosowaniaBox.style.display = "block";
-przycisklosuj.style.display = "block";
+    
+    koloLosowaniaBox.style.display = "block";
+    przycisklosuj.style.display = "block";
+    
+    // Czekamy na pobranie uczestników i rysujemy koło
+    await uczestnicyGotowi;
+    rysujKolo();
 
 const zapisanaOsoba = await pobierzWylosowanaOsobe(imie);
 
