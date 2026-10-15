@@ -770,7 +770,8 @@ function rysujKolo() {
     const canvas = document.getElementById("koloCanvas");
     const ctx = canvas.getContext("2d");
 
-// Wszystkie imiona uczestników const osoby = uczestnicy;
+// Wszystkie imiona uczestników
+const osoby = uczestnicy;
 
 if (!osoby || osoby.length === 0) {
     console.log("Nie ma jeszcze listy uczestników do narysowania koła.");
