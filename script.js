@@ -284,16 +284,20 @@ async function pokazKontoUczestnika(imie) {
         mojaLista.appendChild(element);
     });
 
-    przycisklosuj.style.display = "block";
+    const koloLosowaniaBox = document.getElementById("koloLosowaniaBox");
 
-    const zapisanaOsoba = await pobierzWylosowanaOsobe(imie);
+koloLosowaniaBox.style.display = "block";
+przycisklosuj.style.display = "block";
+
+const zapisanaOsoba = await pobierzWylosowanaOsobe(imie);
 
     if (zapisanaOsoba) {
-        WynikLosowania.textContent =
-            "Twoją osobą jest " + zapisanaOsoba +
-            " a oto jej lista życzeń:";
+    WynikLosowania.textContent =
+        "Twoją osobą jest " + zapisanaOsoba +
+        " a oto jej lista życzeń:";
 
-        przycisklosuj.style.display = "none";
+    koloLosowaniaBox.style.display = "none";
+    przycisklosuj.style.display = "none";
 
         const zapisanaLista = await pobierzListeZyczen(zapisanaOsoba);
 
