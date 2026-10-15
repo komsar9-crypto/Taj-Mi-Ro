@@ -154,7 +154,7 @@ async function zapiszWylosowanaOsobe(imie, wylosowanaOsoba) {
         return false;
     }
 
-    console.log("Zapisano losowanie:", data[0];
+    console.log("Zapisano losowanie:", data[0]);
     return true;
 }
 
