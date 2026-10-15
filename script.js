@@ -882,7 +882,7 @@ function animujKolo(indeksDocelowy) {
         const katPola = (2 * Math.PI) / liczbaOsob;
 
         // Środek pola wybranej osoby
-        const katOsoby = indeksDocelowy * katPola;
+        const katOsoby = indeksDocelowy * katPola + katPola / 2;
 
         // Ustawiamy wybraną osobę pod górną wskazówką
         const katDocelowy = -katOsoby;
