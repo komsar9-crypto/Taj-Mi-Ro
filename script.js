@@ -844,6 +844,9 @@ function narysujPolaKola(ctx, canvas) {
     });
 }
 // === ANIMOWANIE KOŁA ===
+let aktualnyKat = 0;
+let czyKoloSieKreci = false;
+
 function animujKolo(indeksDocelowy) {
     return new Promise(function(resolve) {
         const canvas = document.getElementById("koloCanvas");
