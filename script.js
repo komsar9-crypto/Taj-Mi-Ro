@@ -122,29 +122,42 @@ async function pobierzWszystkieWylosowaneOsoby() {
     });
 }
 
-async function zapiszWylosowanaOsobe(imie, wylosowanaOsoba) { 
+async function zapiszWylosowanaOsobe(imie, wylosowanaOsoba) {
+    // Sprawdzamy, czy przeglądarka ma zalogowanego użytkownika
+    const { data: userData, error: userError } =
+        await supabase1.auth.getUser();
+
+    console.log("Zalogowany użytkownik Supabase:", userData.user);
+    console.log("Błąd sesji:", userError);
+    console.log("Zapisujemy wynik dla:", imie);
+    console.log("Wylosowana osoba:", wylosowanaOsoba);
+
     const { data, error } = await supabase1
-        .from("Losowanie")
-        .update({ 
-            Wylosowano: wylosowanaOsoba
-        }) 
-        .eq("imię", imie)
-        .is("Wylosowano", null)
-        .select();
+    .from("Losowanie")
+    .update({
+        Wylosowano: wylosowanaOsoba
+    })
+    .eq("imię", imie)
+    .is("Wylosowano", null)
+    .select();
+
+    console.log("Wynik aktualizacji:", data);
+    console.log("Błąd aktualizacji:", error);
+
     if (error) {
         console.error("Błąd zapisywania losowania:", error);
         return false;
     }
+
     if (!data || data.length === 0) {
-        console.error(
-            "Nie zapisano losowania. Nie znaleziono dostępnego rekordu dla:",
-            imie
-        );
+        console.error("Nie zaktualizowano żadnego wiersza.");
         return false;
     }
-    console.log("Zapisano losowanie:", data[0]);
+
+    console.log("Zapisano losowanie:", data[0];
     return true;
 }
+
 async function pobierzListeZyczen(imie) {
     const { data, error } = await supabase1
         .from("Prezenty")
