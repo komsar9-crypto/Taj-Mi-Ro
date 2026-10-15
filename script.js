@@ -150,8 +150,9 @@ async function zapiszWylosowanaOsobe(imie, wylosowanaOsoba) {
     }
 
     if (!data || data.length === 0) {
-        console.error("Nie zaktualizowano żadnego wiersza.");
-        return false;
+    console.error("Nie zaktualizowano żadnego wiersza.");
+    console.log("Sprawdź komunikaty powyżej: Zalogowany użytkownik Supabase oraz Błąd aktualizacji.");
+    return false;
     }
 
     console.log("Zapisano losowanie:", data[0]);
