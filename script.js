@@ -485,86 +485,85 @@ async function przywrocSesje() {
 }
 
 przywrocSesje();
-//===Losowanie===//
+// === LOSOWANIE Z ZABEZPIECZENIEM SUPABASE ===
 
 przycisklosuj.addEventListener("click", async function() {
 
-    if (czyKoloSieKreci) {
+    if (czyKoloSieKreci || przycisklosuj.disabled) {
         return;
     }
 
     przycisklosuj.disabled = true;
 
+    const komunikat = document.getElementById("komunikatKola");
+
     try {
 
-        // Sprawdzamy, czy użytkownik już ma wynik
-        const zapisanaOsoba = await pobierzWylosowanaOsobe(
-            ZalogowanyUzytkownik
-        );
+        // Czekamy, aż lista uczestników będzie gotowa.
+        await uczestnicyGotowi;
 
-        if (zapisanaOsoba) {
-            alert("Masz już wylosowaną osobę: " + zapisanaOsoba);
-            przycisklosuj.style.display = "none";
+        if (!ZalogowanyUzytkownik) {
+            alert("Najpierw zaloguj się na swoje konto.");
             return;
         }
 
-        // Pobieramy osoby już przypisane innym uczestnikom
-        const juzWylosowane = await pobierzWszystkieWylosowaneOsoby();
+        // Supabase wybiera osobę i zapisuje wynik
+        // w ramach bezpiecznej operacji.
+        komunikat.textContent = "🎅 Przygotowujemy losowanie...";
 
-        // Tworzymy pulę dostępnych osób
-        const OsobyDoWylosowania = uczestnicy.filter(function(osoba) {
-            return (
-                osoba !== ZalogowanyUzytkownik &&
-                !juzWylosowane.includes(osoba)
+        const { data: WylosowanaOsoba, error } =
+            await supabase1.rpc("losuj_osobe_bezpiecznie");
+
+        if (error) {
+            console.error("Błąd bezpiecznego losowania:", error);
+
+            komunikat.textContent = "Nie udało się przeprowadzić losowania.";
+
+            alert(
+                "Wystąpił błąd podczas losowania. " +
+                "Sprawdź konsolę przeglądarki."
             );
-        });
 
-        console.log("Zalogowany użytkownik:", ZalogowanyUzytkownik);
-        console.log("Już wylosowane:", juzWylosowane);
-        console.log("Dostępne osoby:", OsobyDoWylosowania);
-
-        if (OsobyDoWylosowania.length === 0) {
-            alert("Nie ma już żadnej osoby, którą można wylosować.");
             return;
         }
 
-        // Losujemy osobę z dostępnej puli
-        const indeks = Math.floor(
-            Math.random() * OsobyDoWylosowania.length
-        );
+        if (
+            !WylosowanaOsoba ||
+            !uczestnicy.includes(WylosowanaOsoba)
+        ) {
+            console.error("Nieprawidłowy wynik:", WylosowanaOsoba);
 
-        const WylosowanaOsoba = OsobyDoWylosowania[indeks];
+            komunikat.textContent = "Otrzymano nieprawidłowy wynik.";
 
-        // Znajdujemy jej pole na kole z wszystkimi uczestnikami
+            alert("Nie udało się ustalić prawidłowego wyniku losowania.");
+
+            return;
+        }
+
+        console.log("Zalogowany uczestnik:", ZalogowanyUzytkownik);
+        console.log("Wynik z Supabase:", WylosowanaOsoba);
+
+        // Ustalamy pole na kole odpowiadające wynikowi.
         const indeksNaKole = uczestnicy.indexOf(WylosowanaOsoba);
 
-        // Uruchamiamy animację i czekamy na jej zakończenie
+        // Uruchamiamy istniejącą animację.
         const animacjaUdana = await animujKolo(indeksNaKole);
 
         if (!animacjaUdana) {
-            return;
-        }
-
-        // Dopiero teraz zapisujemy wynik w Supabase
-        const zapisano = await zapiszWylosowanaOsobe(
-            ZalogowanyUzytkownik,
-            WylosowanaOsoba
-        );
-
-        if (!zapisano) {
             alert(
-                "Nie udało się zapisać wyniku. " +
-                "Odśwież stronę i sprawdź, czy losowanie zostało zapisane."
+                "Wynik został już zapisany w bazie. " +
+                "Odśwież stronę, aby go wyświetlić."
             );
+
             return;
         }
 
-        // Wyświetlamy wynik
+        // Wyświetlamy wynik.
         WynikLosowania.textContent =
             "Twoją osobą jest " + WylosowanaOsoba +
             " a oto jej lista życzeń:";
 
-        // Pobieramy listę życzeń
+        // Pobieramy listę życzeń wylosowanej osoby.
         const zapisanaLista = await pobierzListeZyczen(
             WylosowanaOsoba
         );
@@ -574,11 +573,13 @@ przycisklosuj.addEventListener("click", async function() {
         if (zapisanaLista.length > 0) {
 
             zapisanaLista.forEach(function(prezent) {
+
                 const element = document.createElement("li");
 
                 element.textContent = prezent.Prezent + " ";
 
                 if (prezent.link) {
+
                     const linkElement = document.createElement("a");
 
                     linkElement.href = prezent.link;
@@ -593,17 +594,27 @@ przycisklosuj.addEventListener("click", async function() {
             });
 
         } else {
+
             listaZyczen.innerHTML =
                 "<li>Ta osoba nie ma jeszcze zapisanej listy.</li>";
         }
 
-        // Ukrywamy przycisk po udanym losowaniu
+        // Ukrywamy koło po udanym losowaniu.
+        document.getElementById("koloLosowaniaBox").style.display = "none";
+
         przycisklosuj.style.display = "none";
 
     } catch (blad) {
+
         console.error("Błąd podczas losowania:", blad);
-        alert("Wystąpił błąd podczas losowania. Sprawdź konsolę.");
+
+        alert(
+            "Wystąpił nieoczekiwany błąd. " +
+            "Sprawdź konsolę przeglądarki."
+        );
+
     } finally {
+
         przycisklosuj.disabled = false;
     }
 });
